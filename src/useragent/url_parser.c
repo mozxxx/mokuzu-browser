@@ -65,8 +65,7 @@ int parse_url(const char *url, struct urlinfo **res)
 	
 	/* urlを初期化 */
 	scheme_delimiter = "://";
-	_url = malloc(sizeof(char) * (strlen(url) + 1));
-	strcpy(_url, url);
+	copy_string(&_url, url);
 	if(strstr(_url, scheme_delimiter) == NULL) { /* :// がURLに含まれなかった場合の処理 */
 		_url = malloc(sizeof(char) * (strlen(url) + strlen(scheme_delimiter) + 1));
 		sprintf(_url, "%s%s", scheme_delimiter, url);
@@ -109,8 +108,7 @@ int parse_url(const char *url, struct urlinfo **res)
 	/* パース結果を格納 */
 	*res = malloc(sizeof(struct urlinfo));
 	response = *res;
-	response->url = malloc(sizeof(char) * (strlen(url) + 1));
-	strcpy(response->url, url);
+	copy_string(&response->url, url);
 	response->scheme = result[1];
 	response->host = result[2];
 	response->port = result[3];
@@ -135,13 +133,11 @@ int parse_url(const char *url, struct urlinfo **res)
 			split_string(_query_splitedtext->string, "=", &query_key_value);
 			
 			/* key */
-			response->queries->parameters[i].key = malloc(sizeof(char) * (strlen(query_key_value->string) + 1));
-			strcpy(response->queries->parameters[i].key, query_key_value->string);
+			copy_string(&response->queries->parameters[i].key, query_key_value->string);
 			
 			/* value */
 			if (query_key_value->next != NULL) {
-				response->queries->parameters[i].value = malloc(sizeof(char) * (strlen(query_key_value->next->string) + 1));
-				strcpy(response->queries->parameters[i].value, query_key_value->next->string);
+				copy_string(&response->queries->parameters[i].value, query_key_value->next->string);
 			} else {
 				response->queries->parameters[i].value = malloc(sizeof(char));
 				response->queries->parameters[i].value[0] = '\0';
