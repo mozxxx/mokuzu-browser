@@ -46,6 +46,8 @@
 #include "url_parser.h"
 #include "../lib/string.h"
 
+int _parse_url(const char *_url, struct urlinfo *response);
+
 /**
  * URLパーサ
  * @param url パース対象のURL文字列
@@ -55,13 +57,11 @@
 int parse_url(const char *url, struct urlinfo **res)
 {
 	
-	struct urlinfo *response;
-	regex_t preg;
-	size_t nmatch = 7, len;
-	regmatch_t pmatch[nmatch];
-	char *_url, *scheme_delimiter,*result[nmatch];
-	int err,i,_return = 0;
-	struct splitedtext *query_splitedtext, *_query_splitedtext, *query_key_value;
+	char *_url, *scheme_delimiter;
+	int _return = -1;
+	
+	*res = malloc(sizeof(struct urlinfo));
+	copy_string(&(*res)->url, url);
 	
 	/* urlを初期化 */
 	scheme_delimiter = "://";
@@ -71,19 +71,32 @@ int parse_url(const char *url, struct urlinfo **res)
 		sprintf(_url, "%s%s", scheme_delimiter, url);
 	}
 	
-	/* 正規表現でパース */
-	err = regcomp(&preg, "^([^:/?#]*)://([^:/?#]+):*([0-9]*)([^?#]*)[?]*([^#]*)#*(.*)$", REG_EXTENDED); //^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?
-	if (err != 0) {
-		_return = -1;
-		goto EXIT;
-	}
+	/* 正規表現でURLをパース */
+	_return = _parse_url(_url, *res);
 	
-	if (regexec(&preg, _url, nmatch, pmatch, 0) != 0) {
+	/* 終了処理 */
+	free(_url);
+	return _return;
+
+}
+
+/**
+ * 正規表現でURLをパースする
+ * @param 
+ * @return 成功=0, 不成功=-1
+ */
+int _parse_url(const char *_url, struct urlinfo *response)
+{
+
+	regex_t preg;
+	size_t nmatch = 7, len;
+	regmatch_t pmatch[nmatch];
+	char *result[nmatch];
+	int err, i, _return = -1;
+	
+	err = regcomp(&preg, "^([^:/?#]*)://([^:/?#]+):*([0-9]*)([^?#]*)[?]*([^#]*)#*(.*)$", REG_EXTENDED);
 		
-		_return = -1;
-		goto EXIT;
-		
-	} else {
+	if (err == 0 && regexec(&preg, _url, nmatch, pmatch, 0) == 0) {
 		
 		for (i = 1; i < nmatch; i++) {
 						
@@ -103,60 +116,70 @@ int parse_url(const char *url, struct urlinfo **res)
 			
 		}
 		
-	}
-	
-	/* パース結果を格納 */
-	*res = malloc(sizeof(struct urlinfo));
-	response = *res;
-	copy_string(&response->url, url);
-	response->scheme = result[1];
-	response->host = result[2];
-	response->port = result[3];
-	response->path = result[4];
-	response->query_string = result[5];
-	response->fragment = result[6];
-	response->queries = NULL;
+		/* パース結果を格納 */
+		response->scheme = result[1];
+		response->host = result[2];
+		response->port = result[3];
+		response->path = result[4];
+		response->query_string = result[5];
+		response->fragment = result[6];
+		response->queries = NULL;
 
-	/* クエリーの解析 */
-	if (strcmp(response->query_string, "") != 0) {
-		
-		/* 初期化 */
-		response->queries = malloc(sizeof(struct queries));
-		
-		/* クエリー数の設定 */
-		response->queries->length = split_string (response->query_string, "&", &query_splitedtext);
-		response->queries->parameters = malloc(sizeof(struct query) * response->queries->length);
-		
-		/* 解析結果を格納 */
-		for (i = 0, _query_splitedtext = query_splitedtext; _query_splitedtext != NULL; i++, _query_splitedtext = _query_splitedtext->next) {
-		
-			split_string(_query_splitedtext->string, "=", &query_key_value);
-			
-			/* key */
-			copy_string(&response->queries->parameters[i].key, query_key_value->string);
-			
-			/* value */
-			if (query_key_value->next != NULL) {
-				copy_string(&response->queries->parameters[i].value, query_key_value->next->string);
-			} else {
-				response->queries->parameters[i].value = malloc(sizeof(char));
-				response->queries->parameters[i].value[0] = '\0';
-			}
-						
-			freesplitedtext(query_key_value);
-			
+		/* クエリーの解析 */
+		if (strcmp(response->query_string, "") != 0) {
+			parse_query(response->query_string, &response->queries);
 		}
 		
-		freesplitedtext(query_splitedtext);
-
+		_return = 0;
+		
 	}
 	
-	/* 終了処理 */
-	EXIT:
 	regfree(&preg);
-	free(_url);
 	return _return;
+	
+}
 
+/**
+ * URLクエリーパーサ
+ * @param query_string パース対象のURLクエリー
+ * @param res パース結果
+ */
+void parse_query(const char *query_string, struct queries **res)
+{
+	
+	struct queries *response;
+	struct splitedtext *query_splitedtext, *_query_splitedtext, *query_key_value;
+	int i;
+		
+	/* 初期化 */
+	*res = malloc(sizeof(struct queries));
+	response = *res;
+	
+	/* クエリー数の設定 */
+	response->length = split_string (query_string, "&", &query_splitedtext);
+	response->parameters = malloc(sizeof(struct query) * response->length);
+	
+	/* 解析結果を格納 */
+	for (i = 0, _query_splitedtext = query_splitedtext; _query_splitedtext != NULL; i++, _query_splitedtext = _query_splitedtext->next) {
+	
+		split_string(_query_splitedtext->string, "=", &query_key_value);
+		
+		/* key */
+		copy_string(&response->parameters[i].key, query_key_value->string);
+		
+		/* value */
+		if (query_key_value->next != NULL) {
+			copy_string(&response->parameters[i].value, query_key_value->next->string);
+		} else {
+			response->parameters[i].value = malloc(sizeof(char));
+			response->parameters[i].value[0] = '\0';
+		}
+					
+		freesplitedtext(query_key_value);
+		
+	}
+	
+	freesplitedtext(query_splitedtext);
 }
 
 /**

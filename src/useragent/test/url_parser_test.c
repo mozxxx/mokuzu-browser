@@ -122,7 +122,8 @@ test_parse_url_query()
 	
 	struct urlinfo *res1, *res2, *res3;
 	char *url = "http://www.ics.uci.edu:80/pub/ietf/uri/?query1=value1&query2=value2#Related";
-	parse_url(url, &res1);
+	int err = parse_url(url, &res1);
+	mu_assert("error : parse error", err == 0);
 	mu_assert("error : queries != NULL", res1->queries != NULL);
 	mu_assert("error : queries->length == 2", res1->queries->length == 2);
 		

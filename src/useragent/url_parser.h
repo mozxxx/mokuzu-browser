@@ -70,3 +70,10 @@ int parse_url(const char * url, struct urlinfo **res);
  * @param res 開放対象のurlinfo構造体
  */
  void free_urlinfo(struct urlinfo **res);
+
+/**
+ * URLクエリーパーサ
+ * @param query_string パース対象のURLクエリー
+ * @param res パース結果
+ */
+void parse_query(const char *query_string, struct queries **res);
