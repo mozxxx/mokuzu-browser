@@ -57,21 +57,35 @@ int _parse_url(const char *_url, struct urlinfo *response);
 int parse_url(const char *url, struct urlinfo **res)
 {
 	
-	char *_url, *scheme_delimiter;
+	char *__url, *_url, *scheme_delimiter, *_scheme;
+	struct splitedtext *splitedurl;
 	int _return = -1;
 	
 	*res = malloc(sizeof(struct urlinfo));
 	copy_string(&(*res)->url, url);
 	
-	/* urlを初期化 */
+	/* urlの前処理 */
 	scheme_delimiter = "://";
-	copy_string(&_url, url);
-	if(strstr(_url, scheme_delimiter) == NULL) { /* :// がURLに含まれなかった場合の処理 */
-		_url = malloc(sizeof(char) * (strlen(url) + strlen(scheme_delimiter) + 1));
-		sprintf(_url, "%s%s", scheme_delimiter, url);
+		
+	if (split_string(url, scheme_delimiter, &splitedurl) == 1 ) {
+		copy_string(&__url, splitedurl->string);
+		_scheme = "";
+	} else {
+		copy_string(&__url, splitedurl->next->string);
+		_scheme = splitedurl->string;
 	}
 	
-	/* 正規表現でURLをパース */
+	if (strstr(__url, "@") == NULL) {　
+		scheme_delimiter = "://:@";
+	}
+		
+	_url = malloc(sizeof(char) * (strlen(_scheme) + strlen(scheme_delimiter) + strlen(__url) + 1));
+	sprintf(_url, "%s%s%s", _scheme, scheme_delimiter, __url);
+		
+	freesplitedtext(splitedurl);
+	free(__url);
+		
+	/* URLをパース */
 	_return = _parse_url(_url, *res);
 	
 	/* 終了処理 */
@@ -89,12 +103,12 @@ int _parse_url(const char *_url, struct urlinfo *response)
 {
 
 	regex_t preg;
-	size_t nmatch = 7, len;
+	size_t nmatch = 9, len;
 	regmatch_t pmatch[nmatch];
 	char *result[nmatch];
 	int err, i, _return = -1;
 	
-	err = regcomp(&preg, "^([^:/?#]*)://([^:/?#]+):*([0-9]*)([^?#]*)[?]*([^#]*)#*(.*)$", REG_EXTENDED);
+	err = regcomp(&preg, "^([^:/?#]*)://([^:/?#@]*):*([^:/?#@]*)@([^:/?#]+):*([0-9]*)([^?#]*)[?]*([^#]*)#*(.*)$", REG_EXTENDED);
 		
 	if (err == 0 && regexec(&preg, _url, nmatch, pmatch, 0) == 0) {
 		
@@ -118,11 +132,13 @@ int _parse_url(const char *_url, struct urlinfo *response)
 		
 		/* パース結果を格納 */
 		response->scheme = result[1];
-		response->host = result[2];
-		response->port = result[3];
-		response->path = result[4];
-		response->query_string = result[5];
-		response->fragment = result[6];
+		response->user = result[2];
+		response->password = result[3];
+		response->host = result[4];
+		response->port = result[5];
+		response->path = result[6];
+		response->query_string = result[7];
+		response->fragment = result[8];
 		response->queries = NULL;
 
 		/* クエリーの解析 */
@@ -192,6 +208,8 @@ void free_urlinfo(struct urlinfo **res)
 	
 	free((*res)->url);
 	free((*res)->scheme);
+	free((*res)->user);
+	free((*res)->password);
 	free((*res)->host);
 	free((*res)->port);
 	free((*res)->path);

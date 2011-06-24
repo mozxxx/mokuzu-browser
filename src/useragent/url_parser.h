@@ -33,6 +33,8 @@
 struct urlinfo {
     char *url;
     char *scheme;
+    char *user;
+    char *password;
     char *host;
     char *port;
     char *path;

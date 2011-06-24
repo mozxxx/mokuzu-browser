@@ -27,7 +27,7 @@ test_parse_url() {
 		
 	url = "http://www.ics.uci.edu:80/pub/ietf/uri/?query1=value1&query1=value2#Related";
 	int result1 = parse_url(url, &res1);
-	
+			
 	mu_assert("parse error", result1 == 0);
 	mu_assert("url error", strcmp(res1->url, url) == 0);
 	mu_assert("scheme error", strcmp(res1->scheme,	 "http") == 0);
@@ -36,10 +36,10 @@ test_parse_url() {
 	mu_assert("path error", strcmp(res1->path,	 "/pub/ietf/uri/") == 0);
 	mu_assert("query_string error", strcmp(res1->query_string,"query1=value1&query1=value2") == 0);
 	mu_assert("fragment error", strcmp(res1->fragment, "Related") == 0);
-	
+		
 	url2 = "yahoo.co.jp/index.html";
 	int result2 = parse_url(url2, &res2);
-	
+		
 	mu_assert("parse2 error", result2 == 0);
 	mu_assert("url2 error", strcmp(res2->url, url2) == 0);
 	mu_assert("scheme2 error", strcmp(res2->scheme,	"") == 0);
@@ -48,10 +48,12 @@ test_parse_url() {
 	mu_assert("path2 error", strcmp(res2->path,	 "/index.html") == 0);
 	mu_assert("query2_str error", strcmp(res2->query_string,"") == 0);
 	mu_assert("fragment2 error", strcmp(res2->fragment, "") == 0);
+	mu_assert("user2 error", strcmp(res2->user, "") == 0);
+	mu_assert("password2 error", strcmp(res2->password, "") == 0);
 	
-	url3 = "https://yahoo.co.jp:/?query=val1";
+	url3 = "https://user:password@yahoo.co.jp:/?query=val1";
 	int result3 = parse_url(url3, &res3);
-	
+		
 	mu_assert("parse3 error", result3 == 0);
 	mu_assert("url3 error", strcmp(res3->url, url3) == 0);
 	mu_assert("scheme3 error", strcmp(res3->scheme,	"https") == 0);
@@ -60,8 +62,10 @@ test_parse_url() {
 	mu_assert("path3 error", strcmp(res3->path,	 "/") == 0);
 	mu_assert("query_string3 error", strcmp(res3->query_string,"query=val1") == 0);
 	mu_assert("fragmen3 error", strcmp(res3->fragment, "") == 0);
+	mu_assert("user3 error", strcmp(res3->user, "user") == 0);
+	mu_assert("password3 error", strcmp(res3->password, "password") == 0);
 
-	url4 = "yahoo.co.jp?hoge=fuge";
+	url4 = "bob:1234abc@yahoo.co.jp?hoge=fuge";
 	int result4 = parse_url(url4, &res4);
 	
 	mu_assert("parse4 error", result4 == 0);
@@ -73,7 +77,7 @@ test_parse_url() {
 	mu_assert("query_string4 error", strcmp(res4->query_string,"hoge=fuge") == 0);
 	mu_assert("fragment4 error", strcmp(res4->fragment, "") == 0);
 
-	url5 = "http://www.google.co.jp/search?aq=f&sourceid=chrome&client=ubuntu&channel=cs&ie=UTF-8&q=C+Unittest/search?aq=f&sourceid=chrome&client=ubuntu&channel=cs&ie=UTF-8&q=C+Unittest";
+	url5 = "http://user@www.google.co.jp/search?aq=f&sourceid=chrome&client=ubuntu&channel=cs&ie=UTF-8&q=C+Unittest/search?aq=f&sourceid=chrome&client=ubuntu&channel=cs&ie=UTF-8&q=C+Unittest";
 	int result5 = parse_url(url5, &res5);
 	
 	mu_assert("parse5 error", result5 == 0);
@@ -84,6 +88,8 @@ test_parse_url() {
 	mu_assert("path5 error", strcmp(res5->path,	 "/search") == 0);
 	mu_assert("query_string5 error", strcmp(res5->query_string,"aq=f&sourceid=chrome&client=ubuntu&channel=cs&ie=UTF-8&q=C+Unittest/search?aq=f&sourceid=chrome&client=ubuntu&channel=cs&ie=UTF-8&q=C+Unittest") == 0);
 	mu_assert("fragment5 error", strcmp(res5->fragment, "") == 0);
+	mu_assert("user5 error", strcmp(res5->user, "user") == 0);
+	mu_assert("password5 error", strcmp(res5->password, "") == 0);
 	
 	url6 = "http://twitter.com/#!/toptweets_ja";
 	int result6 = parse_url(url6, &res6);
@@ -121,7 +127,7 @@ test_parse_url_query()
 {
 	
 	struct urlinfo *res1, *res2, *res3;
-	char *url = "http://www.ics.uci.edu:80/pub/ietf/uri/?query1=value1&query2=value2#Related";
+	char *url = "http://user:pass@www.ics.uci.edu:80/pub/ietf/uri/?query1=value1&query2=value2#Related";
 	int err = parse_url(url, &res1);
 	mu_assert("error : parse error", err == 0);
 	mu_assert("error : queries != NULL", res1->queries != NULL);
