@@ -34,7 +34,7 @@ test_parse_url() {
 	mu_assert("host error", strcmp(res1->host,	 "www.ics.uci.edu") == 0);
 	mu_assert("port error", strcmp(res1->port,	 "80") == 0);
 	mu_assert("path error", strcmp(res1->path,	 "/pub/ietf/uri/") == 0);
-	mu_assert("query_str error", strcmp(res1->query_str,"query1=value1&query1=value2") == 0);
+	mu_assert("query_string error", strcmp(res1->query_string,"query1=value1&query1=value2") == 0);
 	mu_assert("fragment error", strcmp(res1->fragment, "Related") == 0);
 	
 	url2 = "yahoo.co.jp/index.html";
@@ -46,7 +46,7 @@ test_parse_url() {
 	mu_assert("host2 error", strcmp(res2->host,	 "yahoo.co.jp") == 0);
 	mu_assert("port2 error", strcmp(res2->port,	 "") == 0);
 	mu_assert("path2 error", strcmp(res2->path,	 "/index.html") == 0);
-	mu_assert("query2_str error", strcmp(res2->query_str,"") == 0);
+	mu_assert("query2_str error", strcmp(res2->query_string,"") == 0);
 	mu_assert("fragment2 error", strcmp(res2->fragment, "") == 0);
 	
 	url3 = "https://yahoo.co.jp:/?query=val1";
@@ -58,7 +58,7 @@ test_parse_url() {
 	mu_assert("host3 error", strcmp(res3->host,	 "yahoo.co.jp") == 0);
 	mu_assert("port3 error", strcmp(res3->port,	 "") == 0);
 	mu_assert("path3 error", strcmp(res3->path,	 "/") == 0);
-	mu_assert("query_str3 error", strcmp(res3->query_str,"query=val1") == 0);
+	mu_assert("query_string3 error", strcmp(res3->query_string,"query=val1") == 0);
 	mu_assert("fragmen3 error", strcmp(res3->fragment, "") == 0);
 
 	url4 = "yahoo.co.jp?hoge=fuge";
@@ -70,7 +70,7 @@ test_parse_url() {
 	mu_assert("host4 error", strcmp(res4->host,	 "yahoo.co.jp") == 0);
 	mu_assert("port4 error", strcmp(res4->port,	 "") == 0);
 	mu_assert("path4 error", strcmp(res4->path,	 "") == 0);
-	mu_assert("query_str4 error", strcmp(res4->query_str,"hoge=fuge") == 0);
+	mu_assert("query_string4 error", strcmp(res4->query_string,"hoge=fuge") == 0);
 	mu_assert("fragment4 error", strcmp(res4->fragment, "") == 0);
 
 	url5 = "http://www.google.co.jp/search?aq=f&sourceid=chrome&client=ubuntu&channel=cs&ie=UTF-8&q=C+Unittest/search?aq=f&sourceid=chrome&client=ubuntu&channel=cs&ie=UTF-8&q=C+Unittest";
@@ -82,7 +82,7 @@ test_parse_url() {
 	mu_assert("host5 error", strcmp(res5->host,	 "www.google.co.jp") == 0);
 	mu_assert("port5 error", strcmp(res5->port,	 "") == 0);
 	mu_assert("path5 error", strcmp(res5->path,	 "/search") == 0);
-	mu_assert("query_str5 error", strcmp(res5->query_str,"aq=f&sourceid=chrome&client=ubuntu&channel=cs&ie=UTF-8&q=C+Unittest/search?aq=f&sourceid=chrome&client=ubuntu&channel=cs&ie=UTF-8&q=C+Unittest") == 0);
+	mu_assert("query_string5 error", strcmp(res5->query_string,"aq=f&sourceid=chrome&client=ubuntu&channel=cs&ie=UTF-8&q=C+Unittest/search?aq=f&sourceid=chrome&client=ubuntu&channel=cs&ie=UTF-8&q=C+Unittest") == 0);
 	mu_assert("fragment5 error", strcmp(res5->fragment, "") == 0);
 	
 	url6 = "http://twitter.com/#!/toptweets_ja";
@@ -94,7 +94,7 @@ test_parse_url() {
 	mu_assert("host6 error", strcmp(res6->host,	 "twitter.com") == 0);
 	mu_assert("port6 error", strcmp(res6->port,	 "") == 0);
 	mu_assert("path6 error", strcmp(res6->path,	 "/") == 0);
-	mu_assert("query_str6 error", strcmp(res6->query_str,"") == 0);
+	mu_assert("query_string6 error", strcmp(res6->query_string,"") == 0);
 	mu_assert("fragment6 error", strcmp(res6->fragment, "!/toptweets_ja") == 0);
 	
 	url7 = ":80?hoge=fuge";

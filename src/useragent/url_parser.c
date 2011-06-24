@@ -114,7 +114,7 @@ int parse_url(const char *url, struct urlinfo **res)
 	response->host = result[2];
 	response->port = result[3];
 	response->path = result[4];
-	response->query_str = result[5];
+	response->query_string = result[5];
 	response->fragment = result[6];
 	response->query = NULL;
 	
@@ -138,7 +138,7 @@ void free_urlinfo(struct urlinfo **res)
 	free((*res)->host);
 	free((*res)->port);
 	free((*res)->path);
-	free((*res)->query_str);
+	free((*res)->query_string);
 	free((*res)->fragment);
 	free(*res);
 	

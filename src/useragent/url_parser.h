@@ -36,7 +36,7 @@ struct urlinfo {
     char *host;
     char *port;
     char *path;
-    char *query_str;
+    char *query_string;
     char *fragment;
     struct query *query;
 };
