@@ -44,7 +44,7 @@
 #include <regex.h>
 #include <stdio.h>
 #include "url_parser.h"
-#include "../lib/split_text.h"
+#include "../lib/string.h"
 
 /**
  * URLパーサ
@@ -126,13 +126,13 @@ int parse_url(const char *url, struct urlinfo **res)
 		response->queries = malloc(sizeof(struct queries));
 		
 		/* クエリー数の設定 */
-		response->queries->length = split_text (response->query_string, "&", &query_splitedtext);
+		response->queries->length = split_string (response->query_string, "&", &query_splitedtext);
 		response->queries->parameters = malloc(sizeof(struct query) * response->queries->length);
 		
 		/* 解析結果を格納 */
 		for (i = 0, _query_splitedtext = query_splitedtext; _query_splitedtext != NULL; i++, _query_splitedtext = _query_splitedtext->next) {
 		
-			split_text(_query_splitedtext->string, "=", &query_key_value);
+			split_string(_query_splitedtext->string, "=", &query_key_value);
 			
 			/* key */
 			response->queries->parameters[i].key = malloc(sizeof(char) * (strlen(query_key_value->string) + 1));

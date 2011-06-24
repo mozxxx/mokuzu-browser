@@ -1,6 +1,6 @@
 /**
  * $Id$
- * 文字列分割用ライブラリ
+ * 文字列処理用ライブラリ
  * 
  * Copyright (c) 2011 mozxxx <mozxxx81@gmail.com>
  * All rights reserved.
@@ -30,7 +30,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "split_text.h"
+#include "string.h"
 
 /**
  * テキストを分割して連結リストに格納する
@@ -39,7 +39,7 @@
  * @param res 分割結果が格納された連結リストの最初のノード
  * @return 分割した回数を返す（分割されなかった場合は０を返す）
  */
-int split_text (char const *string, char const *delimiter, struct splitedtext **res)
+int split_string (char const *string, char const *delimiter, struct splitedtext **res)
 {
 	
 	char *chunk;
@@ -153,4 +153,16 @@ int search_delimiter (const char *string, const char *delimiter)
 	
 	return index;
 	
+}
+
+/**
+ * 文字列分の領域を確保してコピーする
+ * @param dest コピー先
+ * @param src コピー元
+ */
+void copy_string(char **dest, const char *src) {
+	
+	*dest = malloc(sizeof(char) * strlen(src) + 1);
+	strcpy((*dest), src);
+
 }

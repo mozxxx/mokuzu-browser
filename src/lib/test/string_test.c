@@ -30,14 +30,15 @@
 #include <stdio.h>
 #include <string.h>
 #include "../../../lib/minunit.h"
-#include "../split_text.c"
+#include "../string.c"
 
 int tests_run = 0;
 
-static char * test_split_text();
+static char * test_split_string();
+static char * test_copy_string();
 static char * all_tests();
 
-static char * test_split_text()
+static char * test_split_string()
 {
     
     char *string, *delimiter, *results[2];
@@ -47,7 +48,7 @@ static char * test_split_text()
     string = "http://yahoo.co.jp";
     delimiter = "://";
     
-    split_count = split_text(string, delimiter, &res);
+    split_count = split_string(string, delimiter, &res);
     mu_assert("error split_count != 2 ", split_count == 2);
   
     i = 0;
@@ -67,9 +68,27 @@ static char * test_split_text()
 
 }
 
+static char * test_copy_string()
+{
+	char *dest, *src;
+	
+	src = "source";
+	copy_string(&dest, src);
+	mu_assert("error dest != src", strcmp(dest, src) == 0);
+		
+	src = "hoge";
+	copy_string(&dest, src);
+	mu_assert("error dest2 != src", strcmp(dest, src) == 0);
+	
+	free(dest);
+	
+	return NULL;
+}
+
 static char * all_tests()
 {
-        mu_run_test(test_split_text);
+    mu_run_test(test_split_string);
+    mu_run_test(test_copy_string);
 	return NULL;
 }
 

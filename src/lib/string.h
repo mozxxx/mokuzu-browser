@@ -43,7 +43,7 @@ struct splitedtext {
  * @param res 分割結果を格納するための連結リスト
  * @return 分割した回数を返す（分割されなかった場合は０を返す）
  */
-int split_text (const char *string, const char *delimiter, struct splitedtext **res);
+int split_string (const char *string, const char *delimiter, struct splitedtext **res);
 
 /**
  * リンクリスト res に対して動的に割り当てられたメモリを解放する
@@ -58,3 +58,10 @@ int freesplitedtext (struct splitedtext *res);
  * @return 区切り文字の出現ポイント（区切り文字が見つからなかった場合は -1 を返す）
  */
 int search_delimiter (const char *string, const char *delimiter);
+
+/**
+ * 文字列分の領域を確保してコピーする
+ * @param dest コピー先
+ * @param src コピー元
+ */
+void copy_string(char **dest, const char *src);
