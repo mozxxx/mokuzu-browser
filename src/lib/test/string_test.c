@@ -45,6 +45,11 @@ static char * test_split_string()
     struct splitedtext *res, *rp;
     int split_count, i;
     
+    string = "hoge";
+    delimiter = ":";
+    split_count = split_string(string, delimiter, &res);
+    mu_assert("error split_count != 0", split_count == 1);
+    
     string = "http://yahoo.co.jp";
     delimiter = "://";
     
@@ -55,12 +60,12 @@ static char * test_split_string()
     for (rp = res; rp != NULL ; rp=rp->next) {
 		
         results[i] = rp->string;
-	i++;
+		i++;
         
     }
-
+		
     mu_assert("error results[0] != 'http' ", strcmp(results[0], "http") == 0); 
-    mu_assert("error results[1] != 'http' ", strcmp(results[1], "yahoo.co.jp") == 0); 
+    mu_assert("error results[1] != 'yahoo.co.jp' ", strcmp(results[1], "yahoo.co.jp") == 0); 
     
     freesplitedtext(res);
     

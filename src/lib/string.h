@@ -41,7 +41,7 @@ struct splitedtext {
  * @param string 分割対象テキスト
  * @param delimiter 区切り文字（デリミタ）
  * @param res 分割結果を格納するための連結リスト
- * @return 分割した回数を返す（分割されなかった場合は０を返す）
+ * @return 分割したされたテキストの個数を返す（分割されなかった場合は1を返す）
  */
 int split_string (const char *string, const char *delimiter, struct splitedtext **res);
 
