@@ -38,16 +38,23 @@ struct urlinfo {
     char *path;
     char *query_string;
     char *fragment;
-    struct query *query;
+    struct queries *queries;
 };
 
 /**
- * クエリー構造体
+ * クエリーパラメーター格納用構造体
+ */
+struct queries {
+	int length; /* クエリー数 */
+	struct query *parameters; /* クエリー配列 */
+};
+
+/**
+ * クエリー key value 構造体
  */
 struct query {
     char *key;
     char *value;
-    struct query *next;
 };
 
 /**

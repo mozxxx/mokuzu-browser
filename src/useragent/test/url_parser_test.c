@@ -120,11 +120,31 @@ static char *
 test_parse_url_query()
 {
 	
-	struct urlinfo *res1;
-	char *url = "http://www.ics.uci.edu:80/pub/ietf/uri/?query1=value1&query1=value2#Related";
+	struct urlinfo *res1, *res2, *res3;
+	char *url = "http://www.ics.uci.edu:80/pub/ietf/uri/?query1=value1&query2=value2#Related";
 	parse_url(url, &res1);
+	mu_assert("error : queries != NULL", res1->queries != NULL);
+	mu_assert("error : queries->length == 2", res1->queries->length == 2);
+		
+	mu_assert("error : parameters[0].key == 'query1'", strcmp(res1->queries->parameters[0].key, "query1") == 0);
+	mu_assert("error : parameters[0].value == 'value1'", strcmp(res1->queries->parameters[0].value, "value1") == 0);
+	mu_assert("error : parameters[1].key == 'query2'", strcmp(res1->queries->parameters[1].key, "query2") == 0);
+	mu_assert("error : parameters[1].value == 'value2'", strcmp(res1->queries->parameters[1].value, "value2") == 0);
 	
-	mu_assert("query parse error", res1->query != NULL);
+	char *url2 = "http://www.ics.uci.edu:80/pub/ietf/uri#Related";
+	parse_url(url2, &res2);
+	mu_assert("error : queries2 == NULL", res2->queries == NULL);
+
+	char *url3 = "http://www.ics.uci.edu:80/pub/ietf/uri?q=1&r=&s#Related";
+	parse_url(url3, &res3);
+	mu_assert("error : queries->length == 3", res3->queries->length == 3);
+	mu_assert("error : parameters[0].key == 'q'", strcmp(res3->queries->parameters[0].key, "q") == 0);
+	mu_assert("error : parameters[0].value == '1'", strcmp(res3->queries->parameters[0].value, "1") == 0);
+	mu_assert("error : parameters[1].key == 'r'", strcmp(res3->queries->parameters[1].key, "r") == 0);
+	mu_assert("error : parameters[1].value == '2'", strcmp(res3->queries->parameters[1].value, "") == 0);
+	mu_assert("error : parameters[2].key == 's'", strcmp(res3->queries->parameters[2].key, "s") == 0);
+	mu_assert("error : parameters[2].value == '3'", strcmp(res3->queries->parameters[2].value, "") == 0);
+	
 	
 	return NULL;
 	

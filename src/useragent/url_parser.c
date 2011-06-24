@@ -44,6 +44,7 @@
 #include <regex.h>
 #include <stdio.h>
 #include "url_parser.h"
+#include "../lib/split_text.h"
 
 /**
  * URLパーサ
@@ -60,7 +61,7 @@ int parse_url(const char *url, struct urlinfo **res)
 	regmatch_t pmatch[nmatch];
 	char *_url, *scheme_delimiter,*result[nmatch];
 	int err,i,_return = 0;
-	
+	struct splitedtext *query_splitedtext, *_query_splitedtext, *query_key_value;
 	
 	/* urlを初期化 */
 	scheme_delimiter = "://";
@@ -116,7 +117,43 @@ int parse_url(const char *url, struct urlinfo **res)
 	response->path = result[4];
 	response->query_string = result[5];
 	response->fragment = result[6];
-	response->query = NULL;
+	response->queries = NULL;
+
+	/* クエリーの解析 */
+	if (strcmp(response->query_string, "") != 0) {
+		
+		/* 初期化 */
+		response->queries = malloc(sizeof(struct queries));
+		
+		/* クエリー数の設定 */
+		response->queries->length = split_text (response->query_string, "&", &query_splitedtext);
+		response->queries->parameters = malloc(sizeof(struct query) * response->queries->length);
+		
+		/* 解析結果を格納 */
+		for (i = 0, _query_splitedtext = query_splitedtext; _query_splitedtext != NULL; i++, _query_splitedtext = _query_splitedtext->next) {
+		
+			split_text(_query_splitedtext->string, "=", &query_key_value);
+			
+			/* key */
+			response->queries->parameters[i].key = malloc(sizeof(char) * (strlen(query_key_value->string) + 1));
+			strcpy(response->queries->parameters[i].key, query_key_value->string);
+			
+			/* value */
+			if (query_key_value->next != NULL) {
+				response->queries->parameters[i].value = malloc(sizeof(char) * (strlen(query_key_value->next->string) + 1));
+				strcpy(response->queries->parameters[i].value, query_key_value->next->string);
+			} else {
+				response->queries->parameters[i].value = malloc(sizeof(char));
+				response->queries->parameters[i].value[0] = '\0';
+			}
+						
+			freesplitedtext(query_key_value);
+			
+		}
+		
+		freesplitedtext(query_splitedtext);
+
+	}
 	
 	/* 終了処理 */
 	EXIT:
@@ -132,6 +169,7 @@ int parse_url(const char *url, struct urlinfo **res)
  */
 void free_urlinfo(struct urlinfo **res)
 {
+	int i;
 	
 	free((*res)->url);
 	free((*res)->scheme);
@@ -140,6 +178,17 @@ void free_urlinfo(struct urlinfo **res)
 	free((*res)->path);
 	free((*res)->query_string);
 	free((*res)->fragment);
+	
+	/* query */
+	if ((*res)->queries != NULL) {
+		for (i = 0; i < (*res)->queries->length; i++) {
+			free((*res)->queries->parameters[i].key);
+			free((*res)->queries->parameters[i].value);
+			free((*res)->queries);
+		}
+		free((*res)->queries);
+	}
+	
 	free(*res);
 	
 }
