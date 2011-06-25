@@ -75,7 +75,7 @@ int parse_url(const char *url, struct urlinfo **res)
 		_scheme = splitedurl->string;
 	}
 	
-	if (strstr(__url, "@") == NULL) {　
+	if (strstr(__url, "@") == NULL) {
 		scheme_delimiter = "://:@";
 	}
 		
