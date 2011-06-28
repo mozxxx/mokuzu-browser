@@ -29,7 +29,7 @@
  
 #include <stdio.h>
 #include <string.h>
-#include "../../../lib/minunit.h"
+#include "../../../third-party/minunit.h"
 #include "../string.c"
 
 int tests_run = 0;

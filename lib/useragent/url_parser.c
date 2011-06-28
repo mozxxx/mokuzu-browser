@@ -44,7 +44,7 @@
 #include <regex.h>
 #include <stdio.h>
 #include "url_parser.h"
-#include "../lib/string.h"
+#include "../general/string.h"
 
 int _parse_url(const char *_url, struct urlinfo *response);
 

@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "../../../lib/minunit.h"
+#include "../../../third-party/minunit.h"
 #include "../url_parser.c"
 
 static char *all_tester();
