@@ -46,7 +46,7 @@
 #include "url_parser.h"
 #include "../general/string.h"
 
-int _parse_url(const char *_url, struct urlinfo *response);
+static int _parse_url(const char *_url, struct urlinfo *response);
 
 /**
  * URLパーサ
@@ -99,7 +99,7 @@ int parse_url(const char *url, struct urlinfo **res)
  * @param 
  * @return 成功=0, 不成功=-1
  */
-int _parse_url(const char *_url, struct urlinfo *response)
+static int _parse_url(const char *_url, struct urlinfo *response)
 {
 
 	regex_t preg;
