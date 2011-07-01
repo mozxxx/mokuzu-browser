@@ -32,13 +32,19 @@ static char * all_tester() {
 
 static char * test_is_url_unreserved_character()
 {
+	char unreserved_char[] = "01234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-.~";
+	char not_unreserved_char[] = "?&^=/#$%*@+";
+	int i, len;
 	
-	mu_assert("a is not URL Unreserved Character.", is_url_unreserved_character('a') == 1);
-	mu_assert("- is not URL Unreserved Character.", is_url_unreserved_character('-') == 1);
-	mu_assert("0 is not URL Unreserved Character.", is_url_unreserved_character('0') == 1);
-	mu_assert(". is not URL Unreserved Character.", is_url_unreserved_character('.') == 1);
-	mu_assert("~ is not URL Unreserved Character.", is_url_unreserved_character('~') == 1);
-	mu_assert("? is URL Unreserved Character.", is_url_unreserved_character('?') == 0);
+	for (i = 0, len = strlen(unreserved_char); i < len ; i++) {
+		printf("%c\n", unreserved_char[i]);
+		mu_assert("err: unreserved_char", is_url_unreserved_character(unreserved_char[i]) == 1);
+	}
 	
+	for (i = 0, len = strlen(not_unreserved_char); i < len ; i++) {
+		printf("%c\n", not_unreserved_char[i]);
+		mu_assert("err not_unreserved_char", is_url_unreserved_character(not_unreserved_char[i]) == 0);
+	}
+		
 	return NULL;
 }
