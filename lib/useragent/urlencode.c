@@ -89,6 +89,10 @@ char * encode_url(char *string)
 		
 	}
 	
+			
+	/* 確保した領域サイズを最適化 */
+	encoded_string = realloc(encoded_string, sizeof(char) * (strlen(encoded_string) + 1));
+	
 	return encoded_string;
 	
 }
