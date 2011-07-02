@@ -27,6 +27,13 @@
  */
 
 /**
+ * 渡された文字列をURLエンコードに変換する（UTF-8限定）
+ * @param string 変換対象文字列
+ * @return 変換後文字列
+ */
+char * encode_url(char *string);
+
+/**
  * URL非予約文字かどうか調べる
  * @param character 調査対象文字
  * @return 調査対象文字がURL非予約文字であれば1を、そうでなければ0を返す

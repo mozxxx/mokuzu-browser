@@ -6,6 +6,7 @@
 
 
 static char *all_tester();
+static char *test_encode_url();
 static char *test_is_url_unreserved_character();
 
 int tests_run = 0;
@@ -27,6 +28,7 @@ int main (void)
 
 static char * all_tester() {
 	mu_run_test(test_is_url_unreserved_character);
+	mu_run_test(test_encode_url);
 	return NULL;
 }
 
@@ -47,4 +49,27 @@ static char * test_is_url_unreserved_character()
 	}
 		
 	return NULL;
+}
+
+static char *test_encode_url()
+{
+	
+	char *url, *encoded_url;
+	
+	url = "wikipediaウィキペディア";
+	encoded_url = encode_url(url);
+	mu_assert("err1 エンコーディング失敗", strcmp(encoded_url, "wikipedia%E3%82%A6%E3%82%A3%E3%82%AD%E3%83%9A%E3%83%87%E3%82%A3%E3%82%A2") == 0);
+	free(encoded_url);
+	
+	url = "01234abcXYZ-.~あいうえお";
+	encoded_url = encode_url(url);
+	mu_assert("err2 エンコーディング失敗", strcmp(encoded_url, "01234abcXYZ-.~%E3%81%82%E3%81%84%E3%81%86%E3%81%88%E3%81%8A") == 0);
+	
+	url = "-";
+	encoded_url = encode_url(url);
+	mu_assert("err3 エンコーディング失敗", strcmp(encoded_url, "%8A") != 0);
+	free(encoded_url);
+	
+	return NULL;
+	
 }
