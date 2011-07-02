@@ -29,6 +29,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "urlencode.h"
 
 /**
@@ -40,7 +41,7 @@ char * encode_url(char *string)
 {
 	size_t	i,
 			src_len = strlen(string),
-			encoded_string_size = sizeof(char) * (src_len + 1) * 9, /* URLエンコーディング後の予想サイズ */
+			encoded_string_size = sizeof(char) * (src_len + 1) * 3, /* URLエンコーディング後の予想サイズ */
 			encoded_string_len;
 			
 	char	character,
