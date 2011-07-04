@@ -57,8 +57,8 @@ char * encode_url(char *string)
 		
 		character = string[i];
 		
-		/* URL非予約文字でなかったらURLエンコードに変換 */
-		if (is_url_unreserved_character(character)) {
+		/* URL予約文字か非予約文字でなかったらURLエンコードに変換 */
+		if (is_url_unreserved_character(character) || is_url_reserved_character(character)) {
 			
 			encoded_char[0] = character;
 			encoded_char[1] = '\0';

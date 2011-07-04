@@ -92,6 +92,11 @@ static char *test_encode_url()
 	encoded_url = encode_url(url);
 	mu_assert("err3 エンコーディング失敗", strcmp(encoded_url, "%8A") != 0);
 	free(encoded_url);
+
+	url = "http://ja.wikipedia.org/wiki/URLエンコード";
+        encoded_url = encode_url(url);
+        mu_assert("err4 エンコーディング失敗", strcmp(encoded_url, "http://ja.wikipedia.org/wiki/URL%E3%82%A8%E3%83%B3%E3%82%B3%E3%83%BC%E3%83%89") == 0);
+        free(encoded_url);
 	
 	return NULL;
 	
