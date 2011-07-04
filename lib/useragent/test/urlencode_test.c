@@ -8,6 +8,7 @@
 static char *all_tester();
 static char *test_encode_url();
 static char *test_is_url_unreserved_character();
+static char *test_is_url_reserved_character();
 
 int tests_run = 0;
 
@@ -28,6 +29,7 @@ int main (void)
 
 static char * all_tester() {
 	mu_run_test(test_is_url_unreserved_character);
+	mu_run_test(test_is_url_reserved_character);
 	mu_run_test(test_encode_url);
 	return NULL;
 }
@@ -35,7 +37,7 @@ static char * all_tester() {
 static char * test_is_url_unreserved_character()
 {
 	char unreserved_char[] = "01234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-.~";
-	char not_unreserved_char[] = "?&^=/#$%*@+";
+        char not_unreserved_char[] = "!*'();:@&=+$,/?#[]";
 	int i, len;
 	
 	for (i = 0, len = strlen(unreserved_char); i < len ; i++) {
@@ -50,6 +52,27 @@ static char * test_is_url_unreserved_character()
 		
 	return NULL;
 }
+
+static char * test_is_url_reserved_character()
+{
+        char reserved_char[] = "!*'();:@&=+$,/?#[]";
+	char not_reserved_char[] = "01234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-.~";
+
+        int i, len;
+
+        for (i = 0, len = strlen(reserved_char); i < len ; i++) {
+                printf("%c\n", reserved_char[i]);
+                mu_assert("err: reserved_char", is_url_reserved_character(reserved_char[i]) == 1);
+        }
+
+        for (i = 0, len = strlen(not_reserved_char); i < len ; i++) {
+                printf("%c\n", not_reserved_char[i]);
+                mu_assert("err not_reserved_char", is_url_reserved_character(not_reserved_char[i]) == 0);
+        }
+
+        return NULL;
+}
+
 
 static char *test_encode_url()
 {

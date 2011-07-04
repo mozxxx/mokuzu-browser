@@ -110,3 +110,17 @@ int is_url_unreserved_character(char character)
 	}
 	return 0;
 }
+
+/**
+ * URL予約文字かどうか調べる
+ * @param character 調査対象文字
+ * @return 調査対象文字がURL予約文字であれば1を、そうでなければ0を返す
+ */
+int is_url_reserved_character(char character)
+{
+	/* TODO: 正規表現が使えないか検討 */
+        if (character == '!' || character == '*' || character == '\'' || character == '(' || character == ')' || character == ';' || character == ':' || character == '@' || character == '&' || character == '=' || character == '+' || character == '$' || character == ',' || character == '/' || character == '?' || character == '#' || character == '#' || character == '[' || character == ']') {
+                return 1;
+        }
+        return 0;
+}
