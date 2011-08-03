@@ -28,8 +28,6 @@
  */
 
 /* TODO:
- * URLエンコードに対応
- * user:password に対応
  * http://yahoo.co.jp//// の時の動作
  * 国際化ドメインへの対応
  */
@@ -44,6 +42,7 @@
 #include <regex.h>
 #include <stdio.h>
 #include "url_parser.h"
+#include "urlencode.h"
 #include "../general/string.h"
 
 static int _parse_url(const char *_url, struct urlinfo *response);
@@ -54,19 +53,21 @@ static int _parse_url(const char *_url, struct urlinfo *response);
  * @param res パース結果が格納されているurlinfo構造体
  * @return 成功すれば0、失敗したら-1
  */
-int parse_url(const char *url, struct urlinfo **res)
+int parse_url(const char *source_url, struct urlinfo **res)
 {
 	
-	char *__url, *_url, *scheme_delimiter, *_scheme;
+	char *url, *__url, *_url, *scheme_delimiter, *_scheme;
 	struct splitedtext *splitedurl;
 	int _return = -1;
+	
+	url = encode_url(source_url); //URLエンコード
 	
 	*res = malloc(sizeof(struct urlinfo));
 	copy_string(&(*res)->url, url);
 	
 	/* urlの前処理 */
 	scheme_delimiter = "://";
-		
+	
 	if (split_string(url, scheme_delimiter, &splitedurl) == 1 ) {
 		copy_string(&__url, splitedurl->string);
 		_scheme = "";

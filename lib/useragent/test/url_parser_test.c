@@ -22,12 +22,12 @@ all_tester() {
 static char *
 test_parse_url() {
 	
-	struct urlinfo *res1, *res2, *res3, *res4, *res5, *res6, *res7;
-	char *url, *url2, *url3, *url4, *url5, *url6, *url7;
+	struct urlinfo *res1, *res2, *res3, *res4, *res5, *res6, *res7, *res8;
+	char *url, *url2, *url3, *url4, *url5, *url6, *url7, *url8;
 		
 	url = "http://www.ics.uci.edu:80/pub/ietf/uri/?query1=value1&query1=value2#Related";
 	int result1 = parse_url(url, &res1);
-			
+	
 	mu_assert("parse error", result1 == 0);
 	mu_assert("url error", strcmp(res1->url, url) == 0);
 	mu_assert("scheme error", strcmp(res1->scheme,	 "http") == 0);
@@ -93,7 +93,7 @@ test_parse_url() {
 	
 	url6 = "http://twitter.com/#!/toptweets_ja";
 	int result6 = parse_url(url6, &res6);
-	
+
 	mu_assert("parse6 error", result6 == 0);
 	mu_assert("url6 error", strcmp(res6->url, url6) == 0);
 	mu_assert("scheme6 error", strcmp(res6->scheme,	"http") == 0);
@@ -105,8 +105,19 @@ test_parse_url() {
 	
 	url7 = ":80?hoge=fuge";
 	int result7 = parse_url(url7, &res7);
-	
-	mu_assert("parse6 error", result7 == -1);
+	mu_assert("parse7 error", result7 == -1);
+
+	url8 = "http://ja.wikipedia.org/wiki/URLエンコード"; //http://ja.wikipedia.org/wiki/URL%E3%82%A8%E3%83%B3%E3%82%B3%E3%83%BC%E3%83%89
+	int result8 = parse_url(url8, &res8);
+		
+	mu_assert("parse8 error", result8 == 0);
+	mu_assert("url8 error", strcmp(res8->url, "http://ja.wikipedia.org/wiki/URL%E3%82%A8%E3%83%B3%E3%82%B3%E3%83%BC%E3%83%89") == 0);
+	mu_assert("scheme8 error", strcmp(res8->scheme,	"http") == 0);
+	mu_assert("host8 error", strcmp(res8->host,	 "ja.wikipedia.org") == 0);
+	mu_assert("port8 error", strcmp(res8->port,	 "") == 0);
+	mu_assert("path8 error", strcmp(res8->path,	 "/wiki/URL%E3%82%A8%E3%83%B3%E3%82%B3%E3%83%BC%E3%83%89") == 0);
+	mu_assert("query_string8 error", strcmp(res8->query_string,"") == 0);
+	mu_assert("fragment8 error", strcmp(res8->fragment, "") == 0);
 
 	return NULL;
 }
