@@ -34,10 +34,12 @@ static char * all_tester() {
 	return NULL;
 }
 
+
 static char * test_is_url_unreserved_character()
 {
-	char unreserved_char[] = "01234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-.~";
-	char not_unreserved_char[] = "!*'();:@&=+$,/?#[]";
+
+	char unreserved_char[] = "01234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-._~";
+	char not_unreserved_char[] = ":/?#[]/@!$&'()*+,;=";
 	int i, len;
 	
 	for (i = 0, len = strlen(unreserved_char); i < len ; i++) {
@@ -53,10 +55,12 @@ static char * test_is_url_unreserved_character()
 	return NULL;
 }
 
+
 static char * test_is_url_reserved_character()
 {
-	char reserved_char[] = "!*'();:@&=+$,/?#[]";
-	char not_reserved_char[] = "01234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-.~";
+	
+	char reserved_char[] = ":/?#[]/@!$&'()*+,;=";
+	char not_reserved_char[] = "01234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-._~";
 
 	int i, len;
 

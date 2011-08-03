@@ -37,7 +37,7 @@
  * @param string 変換対象文字列
  * @return 変換後文字列
  */
-char * encode_url(char *string)
+char * encode_url(const char *string)
 {
 	size_t	i,
 			src_len = strlen(string),
@@ -103,9 +103,14 @@ char * encode_url(char *string)
  * @param character 調査対象文字
  * @return 調査対象文字がURL非予約文字であれば1を、そうでなければ0を返す
  */
-int is_url_unreserved_character(char character)
+int is_url_unreserved_character(const char character)
 {
-	if (isalnum(character) || character == '-' || character == '.' || character == '~') {
+	/*
+	 * URL非予約文字 =  ALPHA / DIGIT / "-" / "." / "_" / "~"
+	 * http://www.studyinghttp.net/cgi-bin/rfc.cgi?3986#Sec2.3
+	 */
+	 
+	if (isalnum(character) || character == '-' || character == '.' || character == '_' || character == '~') {
 		return 1;
 	}
 	return 0;
@@ -116,10 +121,17 @@ int is_url_unreserved_character(char character)
  * @param character 調査対象文字
  * @return 調査対象文字がURL予約文字であれば1を、そうでなければ0を返す
  */
-int is_url_reserved_character(char character)
+int is_url_reserved_character(const char character)
 {
+	/*
+	 * URL予約文字 = gen-delims / sub-delims
+	 * gen-delims  = ":" / "/" / "?" / "#" / "[" / "]" / "@"
+	 * sub-delims  = "!" / "$" / "&" / "'" / "(" / ")" / "*" / "+" / "," / ";" / "="
+	 * http://www.studyinghttp.net/cgi-bin/rfc.cgi?3986#Sec2.2
+	 */
+	
 	/* TODO: 正規表現が使えないか検討 */
-	if (character == '!' || character == '*' || character == '\'' || character == '(' || character == ')' || character == ';' || character == ':' || character == '@' || character == '&' || character == '=' || character == '+' || character == '$' || character == ',' || character == '/' || character == '?' || character == '#' || character == '#' || character == '[' || character == ']') {
+	if (character == '!' || character == '*' || character == '\'' || character == '(' || character == ')' || character == ';' || character == ':' || character == '@' || character == '&' || character == '=' || character == '+' || character == '$' || character == ',' || character == '/' || character == '?' || character == '#'|| character == '[' || character == ']') {
 		return 1;
 	}
 	return 0;

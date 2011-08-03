@@ -31,18 +31,18 @@
  * @param string 変換対象文字列
  * @return 変換後文字列
  */
-char * encode_url(char *string);
+char * encode_url(const char *string);
 
 /**
  * URL非予約文字かどうか調べる
  * @param character 調査対象文字
  * @return 調査対象文字がURL非予約文字であれば1を、そうでなければ0を返す
  */
-int is_url_unreserved_character(char character);
+int is_url_unreserved_character(const char character);
 
 /**
  * URL予約文字かどうか調べる
  * @param character 調査対象文字
  * @return 調査対象文字がURL予約文字であれば1を、そうでなければ0を返す
  */
-int is_url_reserved_character(char character);
+int is_url_reserved_character(const char character);
