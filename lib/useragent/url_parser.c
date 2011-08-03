@@ -90,7 +90,9 @@ int parse_url(const char *source_url, struct urlinfo **res)
 	_return = _parse_url(_url, *res);
 	
 	/* 終了処理 */
+	free(url);
 	free(_url);
+	
 	return _return;
 
 }
