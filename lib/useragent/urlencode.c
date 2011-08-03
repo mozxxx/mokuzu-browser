@@ -119,8 +119,8 @@ int is_url_unreserved_character(char character)
 int is_url_reserved_character(char character)
 {
 	/* TODO: 正規表現が使えないか検討 */
-        if (character == '!' || character == '*' || character == '\'' || character == '(' || character == ')' || character == ';' || character == ':' || character == '@' || character == '&' || character == '=' || character == '+' || character == '$' || character == ',' || character == '/' || character == '?' || character == '#' || character == '#' || character == '[' || character == ']') {
-                return 1;
-        }
-        return 0;
+	if (character == '!' || character == '*' || character == '\'' || character == '(' || character == ')' || character == ';' || character == ':' || character == '@' || character == '&' || character == '=' || character == '+' || character == '$' || character == ',' || character == '/' || character == '?' || character == '#' || character == '#' || character == '[' || character == ']') {
+		return 1;
+	}
+	return 0;
 }
